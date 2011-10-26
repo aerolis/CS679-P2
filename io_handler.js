@@ -14,7 +14,7 @@ function handleMouseMove(evt)
 		{
 			human.yaw = 0;
 		}
-		if ((evt.clientY-10)/canvas.height > .5)
+		/*if ((evt.clientY-10)/canvas.height > .5)
 		{
 			human.pitch = Math.min(30,30*(canvas.height/2-(evt.clientY-10))/(canvas.height/2));
 		}
@@ -25,7 +25,7 @@ function handleMouseMove(evt)
 		else
 		{
 			human.pitch = 0;
-		}
+		}*/
 	}
 }
 function handleKeyDown(evt) {
