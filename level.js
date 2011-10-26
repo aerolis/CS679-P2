@@ -25,12 +25,35 @@ function event()
 	this.pos;
 	this.amount;
 	this.behavior;
+	this.phase;
+	this.model;
 	this.triggered = false;
 }
 event.prototype.doEvent = function()
 {
 	//code to do event here
 	//now doing event
+	switch (this.type)
+	{
+		var i;
+		case "asteroid":
+			for (i=0;i<this.amount;i++)
+			{
+				asteroids.push(new asteroid(this.pos,this.phase));
+			}
+			break;
+		case "enemy_swarm":
+			for (i=0;i<this.amount;i++)
+			{
+				enemies[enemyCt] = new enemy(enemyCt);
+				enemies[enemyCt].pos = this.pos;
+				enemies[enemyCt].phase = this.phase;
+				enemies[enemyCt].model = this.model;
+				enemies[enemyCt].behavior = this.phase;
+				enemyCt++;
+			}
+			break;
+	}
 }
 
 function load_level(data)
@@ -70,6 +93,12 @@ function load_level(data)
 				break;
 			case "<amount>":
 				events[eventNum].amount = parseInt(tokens[1]);
+				break;
+			case "<phase>":
+				events[eventNum].phase = parseInt(tokens[1]);
+				break;
+			case "<model>":
+				events[eventNum].model = parseInt(tokens[1]);
 				break;
 			case "<pos>":
 				events[eventNum].pos = new v3(parseDouble(tokens[1]),parseDouble(tokens[2]),parseDouble(tokens[3]));

@@ -20,6 +20,7 @@ var enemies = new Array();
 var items = new Array();
 var lasers = new Array();
 var levelBackground = new background();
+var enemyCt = 0;
 
 var levelLength = 10000;
 
