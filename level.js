@@ -30,6 +30,7 @@ function event()
 event.prototype.doEvent = function()
 {
 	//code to do event here
+	//now doing event
 }
 
 function load_level(data)
