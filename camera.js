@@ -16,6 +16,6 @@ camera.prototype.update = function()
 	if (this.pos.z > -levelLength)
 	{
 		//update levelBackground.pos here
-		this.pos.z -= 1;
+		this.pos.z -= 2;
 	}
 }

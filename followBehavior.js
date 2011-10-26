@@ -11,7 +11,7 @@ followBehavior.prototype.update = function(vel,loc)
 }
 
 followBehavior.prototype.step = function (vel,loc) {
-	var acceleration = this.steer_to(pt,vel,loc);
+	var acceleration = this.steer_to(human.pos,vel,loc);
     return vel.add(acceleration).limit(this.maxSpeed); //limit the maximum speed a boid can go
 }
 followBehavior.prototype.steer_to = function(target,vel,loc)
@@ -21,7 +21,7 @@ followBehavior.prototype.steer_to = function(target,vel,loc)
        if (d > 0) //if the distance is greater than 0
        {
               desired = desired.normalize(); //calculate steering
-              if (d < 100.0) //bases desired vector magnitude on distance
+              if (d < 5) //bases desired vector magnitude on distance
               {
                      desired = desired.mult(this.maxSpeed*(d/100.0));
               }

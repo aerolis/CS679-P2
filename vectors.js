@@ -71,17 +71,17 @@ v3.prototype.subtract = function(v)
 v3.prototype.mult = function(v)
 {
 	var ret = new v3(0,0,0);
-	ret.x = this.x*v.x;
-	ret.y = this.y*v.y;
-	ret.z = this.z*v.z;
+	ret.x = this.x*v;
+	ret.y = this.y*v;
+	ret.z = this.z*v;
 	return ret;
 }
 v3.prototype.div = function(v)
 {
 	var ret = new v3(0,0,0);
-	ret.x = this.x/v.x;
-	ret.y = this.y/v.y;
-	ret.z = this.z/v.z;
+	ret.x = this.x/v;
+	ret.y = this.y/v;
+	ret.z = this.z/v;
 	return ret;
 }
 v3.prototype.normalize = function()
@@ -96,6 +96,16 @@ v3.prototype.normalize = function()
 v3.prototype.magnitude = function()
 {
 	return Math.sqrt(this.x*this.x+this.y*this.y+this.z*this.z);
+}
+v3.prototype.limit = function(val)
+{
+	var ret = new v3(this.x,this.y,this.z);
+	var mag = ret.magnitude();
+	if (mag > val)
+	{
+		return ret.normalize().mult(val);
+	}
+	return ret;
 }
 
 function v4(x,y,z,a)

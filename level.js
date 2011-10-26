@@ -3,6 +3,7 @@ function level()
 	this.events = new Array();
 	this.length = 1000;
 	this.id;
+	this.loaded = false;
 }
 
 level.prototype.doEvents = function()
@@ -10,10 +11,10 @@ level.prototype.doEvents = function()
 	var i;
 	for (i=0;i<this.events.length;i++)
 	{
-		if (events[i].zpos <= -cam.pos.z && !(events[i].triggered))
+		if (this.events[i].zpos <= -cam.pos.z && !(this.events[i].triggered))
 		{
-			events[i].doEvent();
-			events[i].triggered = true;
+			this.events[i].doEvent();
+			this.events[i].triggered = true;
 		}
 	}
 }
@@ -27,19 +28,25 @@ function event()
 	this.behavior;
 	this.phase;
 	this.model;
+	this.radius;
 	this.triggered = false;
 }
 event.prototype.doEvent = function()
 {
 	//code to do event here
 	//now doing event
+	var i;
 	switch (this.type)
 	{
-		var i;
 		case "asteroid":
 			for (i=0;i<this.amount;i++)
 			{
-				asteroids.push(new asteroid(this.pos,this.phase));
+				asteroids[asteroidCt] = new asteroid(asteroidCt);
+				asteroids[asteroidCt].radius = this.radius;				
+				asteroids[asteroidCt].pos = this.pos;
+				asteroids[asteroidCt].phase = this.phase;
+				asteroids[asteroidCt].init();
+				asteroidCt++;
 			}
 			break;
 		case "enemy_swarm":
@@ -49,7 +56,14 @@ event.prototype.doEvent = function()
 				enemies[enemyCt].pos = this.pos;
 				enemies[enemyCt].phase = this.phase;
 				enemies[enemyCt].model = this.model;
-				enemies[enemyCt].behavior = this.phase;
+				enemies[enemyCt].radius = this.radius;
+				switch (this.behavior)
+				{
+					case "simple_track":
+						enemies[enemyCt].behavior = new followBehavior(.5,5);
+						break;
+				}
+				enemies[enemyCt].init();
 				enemyCt++;
 			}
 			break;
@@ -58,7 +72,7 @@ event.prototype.doEvent = function()
 
 function load_level(data)
 {
-	var lev = new level();
+	var levr = new level();
 	var eventNum = 0;
 	var lines = data.split('\n');
 	for (i in lines)
@@ -76,40 +90,44 @@ function load_level(data)
 				//close level
 				break;
 			case "<id>":
-				lev.id = tokens[1];
+				levr.id = tokens[1];
 				break;
 			case "<length>":
-				lev.length = tokens[1];
+				levr.length = tokens[1];
 				break;
 			case "<event>":
 				//start event
-				lev.events.push(new event());
+				levr.events.push(new event());
 				break;
 			case "<zpos>":
-				events[eventNum].zpos = tokens[1];
+				levr.events[eventNum].zpos = tokens[1];
 				break;
 			case "<type>":
-				events[eventNum].type = tokens[1];
+				levr.events[eventNum].type = tokens[1];
 				break;
 			case "<amount>":
-				events[eventNum].amount = parseInt(tokens[1]);
+				levr.events[eventNum].amount = parseInt(tokens[1]);
 				break;
 			case "<phase>":
-				events[eventNum].phase = parseInt(tokens[1]);
+				levr.events[eventNum].phase = parseInt(tokens[1]);
 				break;
 			case "<model>":
-				events[eventNum].model = parseInt(tokens[1]);
+				levr.events[eventNum].model = parseInt(tokens[1]);
+				break;
+			case "<radius>":
+				levr.events[eventNum].radius = parseInt(tokens[1]);
 				break;
 			case "<pos>":
-				events[eventNum].pos = new v3(parseDouble(tokens[1]),parseDouble(tokens[2]),parseDouble(tokens[3]));
+				levr.events[eventNum].pos = new v3(parseFloat(tokens[1]),parseFloat(tokens[2]),-parseFloat(tokens[3]));
 				break;
 			case "<behavior>":
-				events[eventNum].behavior = tokens[1];
+				levr.events[eventNum].behavior = tokens[1];
 				break;
 			case "</event>":
 				eventNum++;
 				break;
 		}
 	}
-	return lev;
+	levr.loaded = true;
+	return levr;
 }

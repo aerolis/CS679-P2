@@ -5,7 +5,7 @@ function player ()
 	this.roll = 0;
 	this.pos = new v3(0,0,0);
 	this.zScreenPos = 0;
-	
+	this.lives = 5;
 	this.fireTimeout = 0;
 	this.numBombs = 3;
 	
