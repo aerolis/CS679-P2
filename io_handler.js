@@ -30,36 +30,43 @@ function handleMouseMove(evt)
 }
 function handleKeyDown(evt) {
 		switch (evt.keyCode) {
-			case 38:  /* Up arrow was pressed */
+			case 87:  /* Up arrow was pressed */
 				human.fwd = true;
 			break;
-			case 40:  /* Down arrow was pressed */
+			case 83:  /* Down arrow was pressed */
 				human.bck = true;
 			break;
-			case 37:  /* Left arrow was pressed */
+			case 65:  /* Left arrow was pressed */
 				human.left = true;
 			break;
-			case 39:  /* Right arrow was pressed */
+			case 68:  /* Right arrow was pressed */
 				human.right = true;
 			break;
 		}
 }
 function handleKeyUp(evt) {
 		switch (evt.keyCode) {
-			case 38:  /* Up arrow was pressed */
+			case 87:  /* Up arrow was pressed */
 				human.fwd = false;
 			break;
-			case 40:  /* Down arrow was pressed */
+			case 83:  /* Down arrow was pressed */
 				human.bck = false;
 			break;
-			case 37:  /* Left arrow was pressed */
+			case 65:  /* Left arrow was pressed */
 				human.left = false;
 			break;
-			case 39:  /* Right arrow was pressed */
+			case 68:  /* Right arrow was pressed */
 				human.right = false;
 			break;
 			case 32: // space bar
 				human.fireMain();
+			break;
+			case 86:
+				if (human.phase_cooldown <= 0)
+				{
+					human.phase = !human.phase;
+					human.phase_cooldown = 300;
+				}
 			break;
 		}
 }

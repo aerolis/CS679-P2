@@ -51,7 +51,7 @@ asteroid.prototype.takeDamage = function()
 				this.decay();
 			asteroidDie(this.id);
 		}
-		this.hit_timer = 60.0;
+		this.hit_timer = 30.0;
 		this.flash = true;
 	}
 }

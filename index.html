@@ -105,7 +105,6 @@
 	}
 
 </script>
-
 <script id="shader-fs-phase" type="x-shader/x-fragment">
   #ifdef GL_ES
   precision highp float;
@@ -116,11 +115,12 @@
     varying vec3 vLightWeighting;
 
     uniform sampler2D uSampler;
-	uniform float drawStyle;
 
     void main(void) {
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-	    gl_FragColor = vec4(textureColor.r*0.2,textureColor.g*0.4,textureColor.b, textureColor.a*0.5);
+        gl_FragColor = vec4(textureColor.rgb * vLightWeighting * 0.5, textureColor.a*0.3);
+		//gl_FragColor = color;
+        //gl_FragColor = vec4(vec3(0.0,1.0,0.0) * vLightWeighting, color.a);
 	}
 </script>
 
@@ -133,8 +133,14 @@
 	uniform vec3 uLightingDirection;
 	uniform vec3 uDirectionalColor;
 	
+	uniform float uTimePhase;
+	uniform float uTimeScale;
+	uniform float uWiggleAmplitude;
+	uniform float uCoordsCoefficient;
+	
 	varying vec3 vLightWeighting;
 	varying vec2 vTextureCoord;
+	varying float vCoordsSum;
 	
 	attribute vec3 aVertexPosition;
 	attribute vec3 aVertexNormal;
@@ -145,7 +151,12 @@
 
     void main(void) {
 		color = aVertexColor;
-		gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+		vCoordsSum = aVertexPosition.x + aVertexPosition.y + aVertexPosition.z;
+		gl_Position = uPMatrix * uMVMatrix * vec4(
+		aVertexPosition.x + uWiggleAmplitude * sin(uTimePhase * uTimeScale + uCoordsCoefficient * vCoordsSum),
+		aVertexPosition.y + uWiggleAmplitude * sin(uTimePhase * uTimeScale + uCoordsCoefficient * vCoordsSum),
+		aVertexPosition.z + uWiggleAmplitude * sin(uTimePhase * uTimeScale + uCoordsCoefficient * vCoordsSum),
+		1.0);
         vTextureCoord = aVertexUV;
 
         vec3 transformedNormal = uNMatrix * aVertexNormal;
@@ -181,7 +192,9 @@
 <canvas id="myCanvas" width="800" height="600" style="border:3px solid #EEEEEE; margin:0px; position:absolute;">
 Your browser does not support the canvas element.
 </canvas>
-<div id="healthbar" style="display:block;position:absolute;color:white;top:50px;left:50px;">health: 10</div>
+<div id="healthbar" style="display:block;position:absolute;color:white;top:50px;left:50px;"></div>
+<div id="lev_title" style="display:block;position:absolute;color:white;top:100px;left:200px;"></div>
+<div id="lev_1" style="display:block;position:absolute;color:white;top:150px;left:200px;"></div>
 </body>
 
 </html>

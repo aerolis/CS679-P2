@@ -18,9 +18,14 @@ function enemy(id)
 }
 enemy.prototype.init = function()
 {
-	this.pos = new v3(this.pos.x+Math.max(20,Math.random()*50),0,this.pos.z+Math.max(10,Math.random()*50));
-	this.vel = new v3(Math.random()*2,0,Math.random()*2);
-	this.rotVel = new v3(0,Math.random()*2,0);
+	this.pos = new v3(this.pos.x+Math.random()*100,0,this.pos.z+Math.random()*100);
+	this.vel = new v3(Math.random()*4-2,0,Math.random()*2-1);
+	this.rotVel = new v3(0,Math.random()*5,0);
+}
+enemy.prototype.initSimple = function()
+{
+	this.vel = new v3(Math.random()*4-2,0,Math.random()*2-1);
+	this.rotVel = new v3(0,Math.random()*4,0);
 }
 enemy.prototype.draw = function()
 {
@@ -63,7 +68,7 @@ enemy.prototype.takeDamage = function(type)
 			this.dropItem();
 			this.killed();
 		}
-		this.hit_timer = 60.0;
+		this.hit_timer = 30.0;
 		this.flash = true;
 	}
 	else if (type == 2)

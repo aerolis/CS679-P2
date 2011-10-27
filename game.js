@@ -16,6 +16,7 @@ var path = "";
 //play state variables
 //var meshesLoaded = false;
 var playState = 0;
+var time = 0;
 var human = new player();
 var cam = new camera();
 var asteroids = new Array();
@@ -37,6 +38,8 @@ var meshNum = 0;
 var modelsChecked = 0;
 var totalModels = 1;
 var doOnce = false;
+
+T = setTimeout("drawLevelMenu()", 1/100 * 1000);
 
 $.get("meshes/meshids.html", function(data){
 	getMeshes(data);
@@ -116,6 +119,8 @@ function update(){
 	//run update code here
 	//statics[0].rot.x += .5;
 	//statics[0].rot.x%360;
+	time += 1;
+	time & 314;
 	
 	lev.doEvents();
 	var i;

@@ -1,6 +1,8 @@
 // Drawing functions and webgl accessory stuff
 function draw()
 {	
+	document.getElementById("lev_title").innerHTML = "";
+	document.getElementById("lev_1").innerHTML = "";
 	//must set about:config security.fileuri.strict_origin_policy=false to render
 	//set up viewport
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -17,8 +19,10 @@ function draw()
 			drawPlayer();
 			drawBackground();
 			//drawStatics();
-			drawAsteroids();
-			drawEnemies();
+			drawAsteroids(0);
+			drawEnemies(0);
+			drawAsteroids(1);
+			drawEnemies(1);
 			drawGUI();
 			break;
 	}
@@ -26,6 +30,14 @@ function draw()
 	console.log("human x:"+human.pos.x+" y:"+human.pos.y+" z:"+human.pos.z);
 	console.log("levLength:"+levelLength);
 	
+}
+function drawLevelMenu()
+{
+	//draw menu items, not others
+	document.getElementById("lev_title").innerHTML = "Dark Matter";
+	document.getElementById("lev_1").innerHTML = "<a href='#' onClick=''>Level 1</a>";
+	
+	document.getElementById("healthbar").innerHTML = "";
 }
 function drawGUI()
 {
@@ -51,7 +63,7 @@ function drawBackground()
 		offset = new v3(0,0,-(Math.round(-cam.pos.z/2304)-1)*2304);
 	levelBackground.draw(offset);
 }
-function drawAsteroids()
+function drawAsteroids(phase)
 {
 	var i,j;
 	shaderProgram = shaderProgram_main;
@@ -59,7 +71,7 @@ function drawAsteroids()
 
 	for (i=0;i<asteroids.length;i++)
 	{
-		if (asteroids[i] != null)
+		if (asteroids[i] != null && ((asteroids[i].phase == human.phase && phase == 0) || (asteroids[i].phase != human.phase && phase == 1)))
 		{
 			if (asteroids[i].flash)
 			{
@@ -78,6 +90,7 @@ function drawAsteroids()
 				shaderProgram = shaderProgram_main;
 				
 			gl.useProgram(shaderProgram);
+			gl.uniform1f(shaderProgram.timePhase, time);
 			
 			mat4.identity(mvMatrix);
 			mat4.rotate(mvMatrix,degToRad(cam.pitch),[-1,0,0]);
@@ -136,13 +149,13 @@ function drawAsteroids()
 		}
 	}
 }
-function drawEnemies()
+function drawEnemies(phase)
 {
 	var i,j;
 
 	for (i=0;i<enemies.length;i++)
 	{
-		if (enemies[i] != null)
+		if (enemies[i] != null && ((enemies[i].phase == human.phase && phase == 0) || (enemies[i].phase != human.phase && phase == 1)))
 		{
 			if (enemies[i].flash)
 			{
@@ -161,6 +174,7 @@ function drawEnemies()
 				shaderProgram = shaderProgram_main;
 				
 			gl.useProgram(shaderProgram);
+			gl.uniform1f(shaderProgram.timePhase, time);
 				
 			mat4.identity(mvMatrix);
 			mat4.rotate(mvMatrix,degToRad(cam.pitch),[-1,0,0]);
@@ -229,6 +243,7 @@ function drawPlayer()
 	gl.disable(gl.BLEND);
 	gl.enable(gl.DEPTH_TEST);
 	gl.useProgram(shaderProgram);
+	gl.uniform1f(shaderProgram.timePhase, time);
 	
 	mat4.identity(mvMatrix);
 	mat4.rotate(mvMatrix,degToRad(cam.pitch),[-1,0,0]);
@@ -356,6 +371,10 @@ function createProgram(fragmentShaderID, vertexShaderID) {
 	program.draw_with_lighting = gl.getUniformLocation(program, "drawStyle");
 	//program.pointLightingLocationUniform = gl.getUniformLocation(program, "uPointLightingLocation");
 	//program.pointLightingColorUniform = gl.getUniformLocation(program, "uPointLightingColor");
+	program.timePhase = gl.getUniformLocation(program, "uTimePhase");
+	program.timeScale = gl.getUniformLocation(program, "uTimeScale");
+	program.wiggleAmplitude = gl.getUniformLocation(program, "uWiggleAmplitude");
+	program.coordsCoefficient = gl.getUniformLocation(program, "uCoordsCoefficient");
 
 	return program;
 }

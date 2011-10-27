@@ -29,6 +29,9 @@ function event()
 	this.phase;
 	this.model;
 	this.radius;
+	this.shape;
+	this.dist;
+	this.angle;
 	this.triggered = false;
 }
 event.prototype.doEvent = function()
@@ -60,13 +63,32 @@ event.prototype.doEvent = function()
 				switch (this.behavior)
 				{
 					case "simple_track":
-						enemies[enemyCt].behavior = new followBehavior(.5,5);
+						enemies[enemyCt].behavior = new followBehavior(1,10);
 						break;
 				}
 				enemies[enemyCt].init();
 				enemyCt++;
 			}
 			break;
+		case "enemy_formation":
+			for (i=0;i<this.amount;i++)
+			{
+				
+				enemies[enemyCt] = new enemy(enemyCt);
+				if (this.shape == "line")
+					enemies[enemyCt].pos = new v3(this.pos.x+i*this.dist*Math.sin(this.angle),0,this.pos.z-i*this.dist*Math.cos(this.angle));
+				enemies[enemyCt].phase = this.phase;
+				enemies[enemyCt].model = this.model;
+				enemies[enemyCt].radius = this.radius;
+				switch (this.behavior)
+				{
+					case "simple_track":
+						enemies[enemyCt].behavior = new followBehavior(1,10);
+						break;
+				}
+				enemies[enemyCt].initSimple();
+				enemyCt++;
+			}
 	}
 }
 
@@ -104,6 +126,15 @@ function load_level(data)
 				break;
 			case "<type>":
 				levr.events[eventNum].type = tokens[1];
+				break;
+			case "<shape>":
+				levr.events[eventNum].shape = tokens[1];
+				break;
+			case "<dist>":
+				levr.events[eventNum].dist = parseFloat(tokens[1]);
+				break;
+			case "<angle>":
+				levr.events[eventNum].angle = parseFloat(tokens[1]);
 				break;
 			case "<amount>":
 				levr.events[eventNum].amount = parseInt(tokens[1]);

@@ -10,10 +10,6 @@ function player ()
 	this.numBombs = 3;
 	
 	this.rollAngles = new Array();
-	for(var i = 0; i < 10; i++)
-	{
-		
-	}
 	
 	this.fwd;
 	this.bck;
@@ -26,6 +22,7 @@ function player ()
 	this.hp = 5;
 	this.maxHP = 5;
 	this.phase = 1;
+	this.phase_cooldown = 0;
 }
 
 player.prototype.fireMain = function()
@@ -62,16 +59,31 @@ player.prototype.update = function()
 		if (this.hit_timer <= 0.0)
 			this.flash = false;
 	}
-	//old
-	if(this.left)
+	if (this.phase_cooldown > 0.0)
 	{
+		this.phase_cooldown--;
+	}
+	//old
+	if(this.left && !this.right)
+	{
+		if (this.roll < 10)
+			this.roll += 1.5;
 		this.pos.x -= 2;
 		this.pos.x = Math.max(this.pos.x,-200);
 	}
-	if(this.right)
+	else if (this.right && !this.left)
 	{
+		if (this.roll > -10)
+			this.roll -= 1.5;
 		this.pos.x += 2;
 		this.pos.x = Math.min(this.pos.x,200);
+	}
+	else
+	{
+		if (this.roll > 0)
+			this.roll -= 0.5;
+		else if (this.roll < 0)
+			this.roll += 0.5;
 	}
 	if(this.fwd)
 	{
