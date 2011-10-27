@@ -14,8 +14,8 @@ function draw()
 			//draw loading screen
 			break;
 		case 1:
-			drawBackground();
 			drawPlayer();
+			drawBackground();
 			//drawStatics();
 			drawAsteroids();
 			drawEnemies();
@@ -37,6 +37,10 @@ function drawGUI()
 }
 function drawBackground()
 {
+	shaderProgram = shaderProgram_main;
+	gl.useProgram(shaderProgram);
+	gl.uniform1f(shaderProgram.draw_with_lighting,0.0);
+	
 	var offset = new v3(0,0,-Math.round(-cam.pos.z/2304)*2304);
 	levelBackground.draw(offset);
 	var background_position = cam.pos.z % 2304;
@@ -50,11 +54,31 @@ function drawBackground()
 function drawAsteroids()
 {
 	var i,j;
+	shaderProgram = shaderProgram_main;
+	gl.useProgram(shaderProgram);
 
 	for (i=0;i<asteroids.length;i++)
 	{
 		if (asteroids[i] != null)
 		{
+			if (asteroids[i].flash)
+			{
+				shaderProgram = shaderProgram_flash;
+            	gl.disable(gl.BLEND);
+            	gl.enable(gl.DEPTH_TEST);
+			}
+			else if (asteroids[i].phase != human.phase)
+			{
+				shaderProgram = shaderProgram_phase;
+				gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+            	gl.enable(gl.BLEND);
+            	gl.disable(gl.DEPTH_TEST);
+			}
+			else
+				shaderProgram = shaderProgram_main;
+				
+			gl.useProgram(shaderProgram);
+			
 			mat4.identity(mvMatrix);
 			mat4.rotate(mvMatrix,degToRad(cam.pitch),[-1,0,0]);
 			mat4.rotate(mvMatrix,degToRad(cam.yaw),[0,-1,0]);
@@ -74,6 +98,8 @@ function drawAsteroids()
 			vec3.scale(adjustedLD, -1);
 			gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
 			gl.uniform3f(shaderProgram.directionalColorUniform,1.1,1.1,1.1);
+			gl.uniform1f(shaderProgram.time,asteroids[i].hit_timer);
+			gl.uniform1f(shaderProgram.draw_with_lighting,1.0);
 	
 			//setMatrixUniforms();
 			for (j=0;j<models[asteroids[i].model].meshes.length;j++)
@@ -118,6 +144,24 @@ function drawEnemies()
 	{
 		if (enemies[i] != null)
 		{
+			if (enemies[i].flash)
+			{
+				shaderProgram = shaderProgram_flash;
+            	gl.disable(gl.BLEND);
+            	gl.enable(gl.DEPTH_TEST);
+			}
+			else if (enemies[i].phase != human.phase)
+			{
+				shaderProgram = shaderProgram_phase;
+				gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+            	gl.enable(gl.BLEND);
+            	gl.disable(gl.DEPTH_TEST);
+			}
+			else
+				shaderProgram = shaderProgram_main;
+				
+			gl.useProgram(shaderProgram);
+				
 			mat4.identity(mvMatrix);
 			mat4.rotate(mvMatrix,degToRad(cam.pitch),[-1,0,0]);
 			mat4.rotate(mvMatrix,degToRad(cam.yaw),[0,-1,0]);
@@ -136,6 +180,8 @@ function drawEnemies()
 			vec3.scale(adjustedLD, -1);
 			gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
 			gl.uniform3f(shaderProgram.directionalColorUniform,1.1,1.1,1.1);
+			gl.uniform1f(shaderProgram.time,enemies[i].hit_timer);
+			gl.uniform1f(shaderProgram.draw_with_lighting,1.0);
 	
 			//setMatrixUniforms();
 			for (j=0;j<models[enemies[i].model].meshes.length;j++)
@@ -175,6 +221,15 @@ function drawEnemies()
 function drawPlayer()
 {
 	var i,j;
+	if (human.flash)
+		shaderProgram = shaderProgram_flash;
+	else
+		shaderProgram = shaderProgram_main;
+	
+	gl.disable(gl.BLEND);
+	gl.enable(gl.DEPTH_TEST);
+	gl.useProgram(shaderProgram);
+	
 	mat4.identity(mvMatrix);
 	mat4.rotate(mvMatrix,degToRad(cam.pitch),[-1,0,0]);
 	mat4.rotate(mvMatrix,degToRad(cam.yaw),[0,-1,0]);
@@ -193,6 +248,8 @@ function drawPlayer()
 	vec3.scale(adjustedLD, -1);
 	gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
 	gl.uniform3f(shaderProgram.directionalColorUniform,1.1,1.1,1.1);
+	gl.uniform1f(shaderProgram.time,human.hit_timer);
+	gl.uniform1f(shaderProgram.draw_with_lighting,1.0);
 
 	//setMatrixUniforms();
 	for (j=0;j<models[0].meshes.length;j++)
@@ -265,72 +322,47 @@ function getShader(gl, id) {
 	
 	return shader;
 }
-function initShaders()
-{
-	//shaderProgram
-	var fragmentShader = getShader(gl, "shader-fs");
-	var vertexShader = getShader(gl, "shader-vs");
-	
-	shaderProgram = gl.createProgram();
-	gl.attachShader(shaderProgram, vertexShader);
-	gl.attachShader(shaderProgram, fragmentShader);
-	gl.linkProgram(shaderProgram);
-	
-	if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+function createProgram(fragmentShaderID, vertexShaderID) {
+	var fragmentShader = getShader(gl, fragmentShaderID);
+	var vertexShader = getShader(gl, vertexShaderID);
+
+	var program = gl.createProgram();
+	gl.attachShader(program, vertexShader);
+	gl.attachShader(program, fragmentShader);
+	gl.linkProgram(program);
+
+	if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
 		alert("Could not initialise shaders");
 	}
-	
-	gl.useProgram(shaderProgram);
-	
-    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-	gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-	shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-	gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
-    shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
-	gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
-    shaderProgram.vertexUVAttribute = gl.getAttribLocation(shaderProgram, "aVertexUV");
-	gl.enableVertexAttribArray(shaderProgram.vertexUVAttribute);
-	
-	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-	shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
-	//set up lighting for shaders
-	shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
-	shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightingDirection");
-	shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
-	shaderProgram.time = gl.getUniformLocation(shaderProgram, "uTime");
-	
-	//shaderProgram_main
-	var fragmentShader_main = getShader(gl, "shader-fs");
-	var vertexShader_main = getShader(gl, "shader-vs");
-	
-	shaderProgram_main = gl.createProgram();
-	gl.attachShader(shaderProgram_main, vertexShader_main);
-	gl.attachShader(shaderProgram_main, fragmentShader_main);
-	gl.linkProgram(shaderProgram_main);
-	
-	if (!gl.getProgramParameter(shaderProgram_main, gl.LINK_STATUS)) {
-		alert("Could not initialise shaders");
-	}
-	
-	gl.useProgram(shaderProgram_main);
-	
-    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram_main, "aVertexPosition");
-	gl.enableVertexAttribArray(shaderProgram_main.vertexPositionAttribute);
-	shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram_main, "aVertexColor");
-	gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
-    shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram_main, "aVertexNormal");
-	gl.enableVertexAttribArray(shaderProgram_main.vertexNormalAttribute);
-    shaderProgram.vertexUVAttribute = gl.getAttribLocation(shaderProgram_main, "aVertexUV");
-	gl.enableVertexAttribArray(shaderProgram_main.vertexUVAttribute);
-	
-	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram_main, "uPMatrix");
-	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram_main, "uMVMatrix");
-	shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram_main, "uNMatrix");
-	//set up lighting for shaders
-	shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram_main, "uAmbientColor");
-	shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram_main, "uLightingDirection");
-	shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram_main, "uDirectionalColor");
+
+	program.vertexPositionAttribute = gl.getAttribLocation(program, "aVertexPosition");
+	gl.enableVertexAttribArray(program.vertexPositionAttribute);
+	program.vertexColorAttribute = gl.getAttribLocation(program, "aVertexColor");
+	gl.enableVertexAttribArray(program.vertexColorAttribute);
+    program.vertexNormalAttribute = gl.getAttribLocation(program, "aVertexNormal");
+	gl.enableVertexAttribArray(program.vertexNormalAttribute);
+    program.vertexUVAttribute = gl.getAttribLocation(program, "aVertexUV");
+	gl.enableVertexAttribArray(program.vertexUVAttribute);
+
+	program.pMatrixUniform = gl.getUniformLocation(program, "uPMatrix");
+	program.mvMatrixUniform = gl.getUniformLocation(program, "uMVMatrix");
+	program.nMatrixUniform = gl.getUniformLocation(program, "uNMatrix");
+	program.samplerUniform = gl.getUniformLocation(program, "uSampler");
+	program.useTexturesUniform = gl.getUniformLocation(program, "uUseTextures");
+	program.ambientColorUniform = gl.getUniformLocation(program, "uAmbientColor");
+	program.lightingDirectionUniform = gl.getUniformLocation(program, "uLightingDirection");
+	program.directionalColorUniform = gl.getUniformLocation(program, "uDirectionalColor");
+	program.time = gl.getUniformLocation(program, "uTime");
+	program.draw_with_lighting = gl.getUniformLocation(program, "drawStyle");
+	//program.pointLightingLocationUniform = gl.getUniformLocation(program, "uPointLightingLocation");
+	//program.pointLightingColorUniform = gl.getUniformLocation(program, "uPointLightingColor");
+
+	return program;
+}
+function initShaders() {
+    shaderProgram_main = createProgram("shader-fs", "shader-vs");
+	shaderProgram_flash = createProgram("shader-fs-flash", "shader-vs-flash");
+	shaderProgram_phase = createProgram("shader-fs-phase", "shader-vs-phase");
 }
 
 function initLights()

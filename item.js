@@ -1,5 +1,6 @@
-function item()
+function bomb(id)
 {
+	this.id = id;
 	this.pos = new v3(0,0,0);
 	this.type = 1; //bomb
 	this.radius = 20;

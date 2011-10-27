@@ -12,12 +12,14 @@
     varying vec3 vLightWeighting;
 
     uniform sampler2D uSampler;
+	uniform float drawStyle;
 
     void main(void) {
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
-		//gl_FragColor = color;
-        //gl_FragColor = vec4(vec3(0.0,1.0,0.0) * vLightWeighting, color.a);
+		if (drawStyle >= 0.5)
+	        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+		else
+	        gl_FragColor = vec4(textureColor.rgb, textureColor.a);
 	}
 </script>
 
@@ -61,16 +63,68 @@
     varying vec3 vLightWeighting;
 
     uniform sampler2D uSampler;
+	uniform float uTime;
 
     void main(void) {
-        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+        vec4 tCol = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+		vec3 comp = vec3(1.0-tCol.r,1.0-tCol.g,1.0-tCol.b);
+		vec3 flashCol = vec3(tCol.r+comp.r*sin(uTime),tCol.g+comp.g*sin(uTime),tCol.b+comp.b*sin(uTime));
+        gl_FragColor = vec4(flashCol.rgb * vLightWeighting, tCol.a);
 		//gl_FragColor = color;
         //gl_FragColor = vec4(vec3(0.0,1.0,0.0) * vLightWeighting, color.a);
 	}
 </script>
 
 <script id="shader-vs-flash" type="x-shader/x-vertex">
+	uniform mat4 uMVMatrix;
+	uniform mat4 uPMatrix;
+	uniform mat3 uNMatrix;
+	
+	uniform vec3 uAmbientColor;
+	uniform vec3 uLightingDirection;
+	uniform vec3 uDirectionalColor;
+	
+	varying vec3 vLightWeighting;
+	varying vec2 vTextureCoord;
+	
+	attribute vec3 aVertexPosition;
+	attribute vec3 aVertexNormal;
+	attribute vec4 aVertexColor;
+	attribute vec2 aVertexUV;
+	
+	varying vec4 color;
+
+    void main(void) {
+		color = aVertexColor;
+		gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aVertexUV;
+
+        vec3 transformedNormal = uNMatrix * aVertexNormal;
+        float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
+        vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+	}
+
+</script>
+
+<script id="shader-fs-phase" type="x-shader/x-fragment">
+  #ifdef GL_ES
+  precision highp float;
+  #endif 
+  
+    varying vec2 vTextureCoord;
+	varying vec4 color;
+    varying vec3 vLightWeighting;
+
+    uniform sampler2D uSampler;
+	uniform float drawStyle;
+
+    void main(void) {
+        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+	    gl_FragColor = vec4(textureColor.r*0.2,textureColor.g*0.4,textureColor.b, textureColor.a*0.5);
+	}
+</script>
+
+<script id="shader-vs-phase" type="x-shader/x-vertex">
 	uniform mat4 uMVMatrix;
 	uniform mat4 uPMatrix;
 	uniform mat3 uNMatrix;

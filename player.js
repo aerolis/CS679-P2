@@ -19,6 +19,13 @@ function player ()
 	this.bck;
 	this.right;
 	this.left;
+	
+	//added by nate wed night
+	this.flash = false;
+	this.hit_timer = 0.0;
+	this.hp = 5;
+	this.maxHP = 5;
+	this.phase = 1;
 }
 
 player.prototype.fireMain = function()
@@ -35,8 +42,27 @@ player.prototype.bindMesh = function()
 	}
 }
 
+//new function added
+player.prototype.takeDamage = function()
+{
+	if (this.hit_timer <= 0.0)
+	{
+		this.hp--;
+		this.hit_timer = 60.0;
+		this.flash = true;
+	}
+}
+
 player.prototype.update = function()
 {
+	//new
+	if (this.hit_timer > 0.0)
+	{
+		this.hit_timer--;
+		if (this.hit_timer <= 0.0)
+			this.flash = false;
+	}
+	//old
 	if(this.left)
 	{
 		this.pos.x -= 2;

@@ -13,6 +13,8 @@ function enemy(id)
 	this.dropRate = 0.1;
 	this.behavior;
 	this.model;
+	this.flash = false;
+	this.hit_timer = 0.0;
 }
 enemy.prototype.init = function()
 {
@@ -25,6 +27,13 @@ enemy.prototype.draw = function()
 }
 enemy.prototype.update = function()
 {
+	if (this.hit_timer > 0.0)
+	{
+		this.hit_timer--;
+		if (this.hit_timer <= 0.0)
+			this.flash = false;
+	}
+	
 	var b = this.behavior;
 	this.vel = b.update(this.vel,this.pos);
 	
@@ -46,9 +55,16 @@ enemy.prototype.offScreen = function()
 }
 enemy.prototype.takeDamage = function(type)
 {
-	if (type == 1)
+	if (this.hit_timer <= 0.0 && type == 1)
 	{
 		this.hp--;
+		if (this.hp <= 0)
+		{
+			this.dropItem();
+			this.killed();
+		}
+		this.hit_timer = 60.0;
+		this.flash = true;
 	}
 	else if (type == 2)
 	{
@@ -63,7 +79,12 @@ enemy.prototype.die = function()
 }
 enemy.prototype.dropItem = function()
 {
-	//to be done
+	if (Math.random() < this.dropRate)
+	{
+		items[itemCt] = new bomb(itemCt);
+		items[itemCt].pos = this.pos;
+		itemCt++;
+	}
 }
 function enemyDie(id)
 {
