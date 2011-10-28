@@ -23,12 +23,16 @@ var asteroids = new Array();
 var enemies = new Array();
 var items = new Array();
 var lasers = new Array();
+var explosions = new Array();
 var levelBackground = new background();
 var asteroidCt = 0;
 var enemyCt = 0;
 var itemCt = 0;
+var explosionCt = 0;
 var levNum = 1;
+var numOfLevels = 2;
 var lev = new level();
+var boss;
 
 var levelLength = 10000;
 
@@ -36,16 +40,35 @@ var levelLength = 10000;
 var models = new Array();
 var meshNum = 0;
 var modelsChecked = 0;
-var totalModels = 1;
+var totalModels = 12;
 var doOnce = false;
+var doneSetup = 0;
 
-T = setTimeout("drawLevelMenu()", 1/100 * 1000);
+//phase shift vars
+var phaseOutTime = 0;
 
-$.get("meshes/meshids.html", function(data){
-	getMeshes(data);
-}, 'html');
 
-T = setTimeout("initGame()", 1/60 * 1000);
+function preInit()
+{
+	loadGUI();
+	T = setTimeout("drawLevelMenu()", 1/100 * 1000);
+	$.get("meshes/meshids.html", function(data){
+		getMeshes(data);
+	}, 'html');
+	//pausecomp(500);
+	T = setTimeout("initGame()", 1/60 * 1000);
+}
+
+function startGame()
+{
+	if (lev.loaded == true && checkLoaded)
+	{
+		//pausecomp(500);
+		playState = 1;
+		loadGUI();
+		drawGUI();
+	}
+}
 
 function initGame() //begin the game initialization
 {
@@ -64,14 +87,22 @@ function initGame() //begin the game initialization
 
 function setupGame()
 {
-	//initPyramid();
 	//initialize all loaded meshes
 	initObjects();
+	doneSetup = 0.33;
 	//initialize lights
 	initLights();
+	doneSetup = 0.66;
 	// make the shaders
 	initShaders();
-	//start the game loop
+	doneSetup = 1;
+	
+}
+function nextLevel()
+{
+	playState = 1;
+	loadGUI();
+	drawGUI();
 }
 function setupLevel()
 {
@@ -92,15 +123,14 @@ function gameLoop()
 	switch (playState)
 	{
 		case 0: //loading screen and instructions
-			if (checkLoaded && !doOnce)
+			if (checkLoaded() && !doOnce)
 			{
-				pausecomp(100);
 				doOnce = true;
 				setupGame();
 				setupLevel();
 			}
-			if (lev.loaded == true && checkLoaded)
-				playState++;
+			var tmp = 100*modelsChecked/totalModels+100*doneSetup;
+			document.getElementById('loadingBar').style.width = tmp+"px";
 			break;
 		case 1: //level select
 			draw();
@@ -117,8 +147,6 @@ function gameLoop()
 
 function update(){
 	//run update code here
-	//statics[0].rot.x += .5;
-	//statics[0].rot.x%360;
 	time += 1;
 	time & 314;
 	
@@ -134,20 +162,55 @@ function update(){
 		if (asteroids[i] != null)
 			asteroids[i].update();
 	}
+	for (i=0;i<explosions.length;i++)
+	{
+		if (explosions[i] != null)
+			explosions[i].update();
+	}
+	for (i=0;i<items.length;i++)
+	{
+		if (items[i] != null)
+			items[i].update();
+	}
+	for(i=0;i<lasers.length;i++)
+	{
+		if (lasers[i] != null)
+			lasers[i].update();
+	}
+	if (boss != null)
+		boss.update();
 	human.update();
 	cam.update();
 	detectCollisions();
+	if (phaseOutTime > 0)
+	{
+		phaseOutTime--;
+	}
+	if (lev.finished)
+	{
+		if (levNum < numOfLevels)
+		{
+			playState = 2;
+			boss = null;
+			asteroids = new Array();
+			enemies = new Array();
+			items = new Array();
+			explosions = new Array();
+			lasers = new Array();
+			cam = new camera();
+			human.restart();
+			levNum++;
+			setupLevel();
+		}
+		else
+			playState = 3;
+		loadGUI();
+	}
 }
 
 
 function initObjects()
 {
-	//statics.push(new static(new v3(0,0,-250),new v3(0,0,0),new v3(1,1,1),1));
-	//models[0].initMaterials();
-	//models[1].initMaterials();
-	//statics[0].bindMesh();
-	//human.bindMesh();
-		
 	var i,j;
 	for (i=0;i<models.length;i++)
 	{
@@ -165,16 +228,61 @@ function initObjects()
 function detectCollisions()
 {
 	var i,j;
+	//check boss with player
+	if (boss != null)
+	{
+		var distance = human.pos.subtract(boss.pos).magnitude();
+		if(distance < boss.radius)
+		{//collision
+			//damage player
+			human.takeDamage(4);
+		}
+	}
+	
+	//check boss with lasers
+	for (j=0;j<lasers.length;j++)
+	{
+		if (boss != null)
+		{
+			if (lasers[j] != null && lasers[j].type == 1 && !boss.dead)
+			{
+				var distance = lasers[j].pos.subtract(boss.pos).magnitude();
+				if(distance < boss.radius)
+				{//collision
+					//damage asteroid
+					boss.takeDamage(1);
+					lasers[j].die();
+				}
+			}
+		}
+	}
+	
+	//check player with lasers
+	for (j=0;j<lasers.length;j++)
+	{
+		if (lasers[j] != null && lasers[j].type == 2 && lasers[j].phase == human.phase)
+		{
+			var distance = lasers[j].pos.subtract(human.pos).magnitude();
+			if(distance < human.radius)
+			{//collision
+				//damage asteroid
+				human.takeDamage(2);
+				lasers[j].die();
+			}
+		}
+	}
+	
+	
 	//check player against asteroids
 	for (i=0;i<asteroids.length;i++)
 	{
-		if (asteroids[i] != null && asteroids[i].phase == human.phase)
+		if (asteroids[i].phase == human.phase)
 		{
 			var distance = human.pos.subtract(asteroids[i].pos).magnitude();
 			if(distance < asteroids[i].radius)
 			{//collision
 				//damage player
-				human.takeDamage();
+				human.takeDamage(asteroids[i].maxHP);
 			}
 		}
 	}
@@ -187,7 +295,7 @@ function detectCollisions()
 			var distance = human.pos.subtract(items[i].pos).magnitude();
 			if(distance < items[i].radius)
 			{//collision
-				human.numBombs++;
+				items[i].collect();
 			}
 		}
 	}
@@ -200,8 +308,7 @@ function detectCollisions()
 			if(distance < enemies[i].radius)
 			{//collision
 				//damage player
-				human.takeDamage();
-				console.log("player was hit");
+				human.takeDamage(2);
 			}
 		}
 	}
@@ -213,12 +320,17 @@ function detectCollisions()
 		{
 			for (j=0;j<lasers.length;j++)
 			{
-				if (lasers[i] != null && asteroids[i].phase == lasers[j].phase)
+				if (asteroids[i] != null)
 				{
-					var distance = lasers[j].pos.subtract(asteroids[i].pos).magnitude();
-					if(distance < asteroids[i].radius-10)
-					{//collision
-						//damage asteroid
+					if (lasers[j] != null && asteroids[i].phase == lasers[j].phase && lasers[j].type == 1)
+					{
+						var distance = lasers[j].pos.subtract(asteroids[i].pos).magnitude();
+						if(distance < asteroids[i].radius)
+						{//collision
+							//damage asteroid
+							asteroids[i].takeDamage();
+							lasers[j].die();
+						}
 					}
 				}
 			}
@@ -231,12 +343,17 @@ function detectCollisions()
 		{
 			for (j=0;j<lasers.length;j++)
 			{
-				if (lasers[i] != null && enemies[i].phase == lasers[j].phase)
+				if (enemies[i] != null)
 				{
-					var distance = lasers[j].pos.subtract(enemies[i].pos).magnitude();
-					if(distance < enemies[i].radius-10)
-					{//collision
-						//damage enemy
+					if (lasers[j] != null && enemies[i].phase == lasers[j].phase && lasers[j].type == 1)
+					{
+						var distance = lasers[j].pos.subtract(enemies[i].pos).magnitude();
+						if(distance < enemies[i].radius)
+						{//collision
+							//damage enemy
+							enemies[i].takeDamage(1);
+							lasers[j].die();
+						}
 					}
 				}
 			}

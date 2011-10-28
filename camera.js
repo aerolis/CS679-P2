@@ -13,9 +13,9 @@ function camera ()
 
 camera.prototype.update = function()
 {
-	if (this.pos.z > -levelLength)
+	if (this.pos.z > -levelLength && human.state == 1)
 	{
 		//update levelBackground.pos here
-		this.pos.z -= 2;
+		this.pos.z -= 1.5;
 	}
 }

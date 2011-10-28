@@ -13,13 +13,29 @@
 
     uniform sampler2D uSampler;
 	uniform float drawStyle;
+	uniform float uTime;
+	uniform float uPhaseOut;
 
     void main(void) {
-        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-		if (drawStyle >= 0.5)
-	        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+        vec4 tCol = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+		if (uPhaseOut >= 0.5)
+		{
+			if (drawStyle <= 0.5)
+			{	
+				vec3 comp = vec3(1.0-tCol.r,1.0-tCol.g,1.0-tCol.b);
+				vec3 flashCol = vec3(tCol.r+comp.r*sin(0.08*uTime),tCol.g+comp.g*sin(0.08*uTime),tCol.b+comp.b*sin(0.08*uTime));
+       	 		gl_FragColor = vec4(flashCol.rgb, tCol.a);
+			}
+			else
+	       		gl_FragColor = vec4(tCol.rgb * vLightWeighting, tCol.a);
+		}
 		else
-	        gl_FragColor = vec4(textureColor.rgb, textureColor.a);
+		{
+			if (drawStyle >= 0.5)
+	       		gl_FragColor = vec4(tCol.rgb * vLightWeighting, tCol.a);
+			else
+	        	gl_FragColor = vec4(tCol.rgb, tCol.a);
+		}
 	}
 </script>
 
@@ -118,9 +134,7 @@
 
     void main(void) {
         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        gl_FragColor = vec4(textureColor.rgb * vLightWeighting * 0.5, textureColor.a*0.3);
-		//gl_FragColor = color;
-        //gl_FragColor = vec4(vec3(0.0,1.0,0.0) * vLightWeighting, color.a);
+        gl_FragColor = vec4(textureColor.rgb * vLightWeighting * 0.5, textureColor.a*0.5);
 	}
 </script>
 
@@ -175,6 +189,9 @@
 <script type="text/javascript" src="vectors.js"></script> 
 <script type="text/javascript" src="static.js"></script> 
 <script type="text/javascript" src="asteroid.js"></script> 
+<script type="text/javascript" src="boss.js"></script> 
+<script type="text/javascript" src="explosion.js"></script>
+<script type="text/javascript" src="laser.js"></script>
 <script type="text/javascript" src="enemy.js"></script>
 <script type="text/javascript" src="player.js"></script> 
 <script type="text/javascript" src="camera.js"></script> 
@@ -183,18 +200,35 @@
 <script type="text/javascript" src="fbx-modelloader.js"></script>
 <script type="text/javascript" src="gl-matrix.js"></script> 
 <script type="text/javascript" src="gl-matrix-min.js"></script> 
-<script type="application/javascript" src="game.js">
-</script>
-<script type="application/javascript" src="draw.js">
-</script>
+<script type="application/javascript" src="draw.js"></script>
+<script type="application/javascript" src="game.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
-<body style="background-color:#FFFFFF;">
-<canvas id="myCanvas" width="800" height="600" style="border:3px solid #EEEEEE; margin:0px; position:absolute;">
+<body style="background-color:#FFFFFF;" onLoad="preInit()";>
+<canvas id="myCanvas" width="800" height="900" style="border:3px solid #EEEEEE; margin:0px; position:absolute;">
 Your browser does not support the canvas element.
 </canvas>
-<div id="healthbar" style="display:block;position:absolute;color:white;top:50px;left:50px;"></div>
-<div id="lev_title" style="display:block;position:absolute;color:white;top:100px;left:200px;"></div>
-<div id="lev_1" style="display:block;position:absolute;color:white;top:150px;left:200px;"></div>
+
+<div id="loadingBackground">&nbsp;</div>
+<div id="lev_play"><a href="#" onClick="startGame()"><img src="menus/play_button.png"></a></div>
+<div id="lev_inst"><a href="#"><img src="menus/inst_button.png"></a></div>
+<div id="loadingBar_outline"></div>
+<div id="loadingBar"></div>
+
+<div id="healthBar_outline">&nbsp;</div>
+<div id="healthBar"></div>
+<div id="phaseBar"></div>
+<div id="bombsBar" ></div>
+<div id="livesBar"></div>
+
+<div id="afterLevelBackground">&nbsp;</div>
+<div id="afterLevelScore"><img src="menus/score.png"></div>
+<div id="afterLevelScoreNum"></div>
+<div id="afterLevelNext"><a href="#" onClick="nextLevel()"><img src="menus/next_button.png"></a></div>
+
+<div id="finalBackground">&nbsp;</div>
+<div id="finalScore"><img src="menus/final_score.png"></div>
+
 </body>
 
 </html>

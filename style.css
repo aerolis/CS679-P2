@@ -1,0 +1,153 @@
+@charset "utf-8";
+/* CSS Document */
+#loadingBackground {
+	background-image:url('menus/loader_back.png');
+	display: block;
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width:800px;
+	height:900px;
+	z-index:-1;
+}
+#lev_play {
+	display:block;
+	position:absolute;
+	top:250px;
+	left:300px;
+}
+#lev_inst {
+	display:block;
+	position:absolute;
+	top:350px;
+	left:300px;
+}
+#loadingBar_outline {
+	display: block;
+	width: 204px;
+	height: 34px;
+	position: absolute;
+	background-color: black;
+	top: 800px;
+	left: 298px;
+	opacity: 0.5;	
+}
+#loadingBar {
+	background-color: red;
+	height: 30px;
+	width: 200px;
+	opacity: .4;
+	display: block;
+	position: absolute;
+	top: 802px;
+	left: 300px;
+}
+
+
+
+#healthBar_outline {
+	display: block;
+	width: 204px;
+	height: 34px;
+	position: absolute;
+	background-color: black;
+	top: 800px;
+	left: 50px;
+	opacity: 0.5;	
+}
+#healthBar {
+	background-color: red;
+	height: 30px;
+	width: 200px;
+	opacity: .4;
+	display: block;
+	position: absolute;
+	top: 802px;
+	left: 52px;
+}
+#phaseBar {
+	background-color: green;
+	height: 5px;
+	width: 200px;
+	opacity: .4;
+	display: block;
+	position: absolute;
+	top: 840px;
+	left: 52px;
+}
+#bombsBar {
+	width:200px;
+	height: 30px;
+	display: block;
+	position: absolute;
+	top: 875px;
+	left: 50px;
+	opacity: .8;
+}
+#livesBar {
+	width:200px;
+	height: 30px;
+	display: block;
+	position: absolute;
+	top: 850px;
+	left: 50px;
+	opacity: .8;
+}
+
+#afterLevelBackground {
+	background-image:url('menus/afterLevel_screen.png');
+	display: block;
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width:800px;
+	height:900px;
+	z-index:1;
+}
+#afterLevelScore {
+	display:block;
+	position:absolute;
+	top:250px;
+	left:200px;
+	z-index:2;
+	font: Verdana, Geneva, sans-serif;
+	font-size: 40px;
+	color: white;
+	vertical-align:middle;
+}
+#afterLevelScoreNum {
+	display:block;
+	position:absolute;
+	top:272px;
+	left:400px;
+	z-index:2;
+	font:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 40px;
+	color: white;
+	vertical-align:middle;
+}
+#afterLevelNext {
+	display:block;
+	position:absolute;
+	top:350px;
+	left:300px;
+	z-index:2;
+}
+
+#finalBackground {
+	background-image:url('menus/final_background.png');
+	display: block;
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width:800px;
+	height:900px;
+	z-index:1;
+}
+#finalScore {
+	display:block;
+	position:absolute;
+	top:250px;
+	left:200px;
+	z-index:2;
+}

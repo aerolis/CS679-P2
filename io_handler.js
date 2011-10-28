@@ -42,6 +42,9 @@ function handleKeyDown(evt) {
 			case 68:  /* Right arrow was pressed */
 				human.right = true;
 			break;
+			case 32:
+				human.fire = true;
+			break;
 		}
 }
 function handleKeyUp(evt) {
@@ -59,13 +62,17 @@ function handleKeyUp(evt) {
 				human.right = false;
 			break;
 			case 32: // space bar
-				human.fireMain();
+				human.fire = false;
+			break;
+			case 66:
+				human.useBomb();
 			break;
 			case 86:
 				if (human.phase_cooldown <= 0)
 				{
 					human.phase = !human.phase;
 					human.phase_cooldown = 300;
+					phaseOutTime = 60;
 				}
 			break;
 		}

@@ -4,6 +4,8 @@ function level()
 	this.length = 1000;
 	this.id;
 	this.loaded = false;
+	this.boss;
+	this.finished = false;
 }
 
 level.prototype.doEvents = function()
@@ -16,6 +18,11 @@ level.prototype.doEvents = function()
 			this.events[i].doEvent();
 			this.events[i].triggered = true;
 		}
+	}
+
+	if (this.boss.zpos <= -cam.pos.z && !(this.boss.triggered))
+	{
+		this.boss.doEvent();
 	}
 }
 
@@ -44,52 +51,58 @@ event.prototype.doEvent = function()
 		case "asteroid":
 			for (i=0;i<this.amount;i++)
 			{
-				asteroids[asteroidCt] = new asteroid(asteroidCt);
-				asteroids[asteroidCt].radius = this.radius;				
-				asteroids[asteroidCt].pos = this.pos;
-				asteroids[asteroidCt].phase = this.phase;
-				asteroids[asteroidCt].init();
-				asteroidCt++;
+				this.addAsteroid();
 			}
 			break;
 		case "enemy_swarm":
 			for (i=0;i<this.amount;i++)
 			{
-				enemies[enemyCt] = new enemy(enemyCt);
-				enemies[enemyCt].pos = this.pos;
-				enemies[enemyCt].phase = this.phase;
-				enemies[enemyCt].model = this.model;
-				enemies[enemyCt].radius = this.radius;
+				var id = enemies.length;
+				enemies.push(new enemy(id));
+				enemies[id].pos = new v3(this.pos.x,150,this.pos.z);
+				enemies[id].phase = this.phase;
+				enemies[id].model = this.model;
+				enemies[id].radius = this.radius;
 				switch (this.behavior)
 				{
 					case "simple_track":
-						enemies[enemyCt].behavior = new followBehavior(1,10);
+						enemies[id].behavior = new followBehavior(1,10);
 						break;
 				}
-				enemies[enemyCt].init();
-				enemyCt++;
+				enemies[id].init();
+				//enemyCt++;
 			}
 			break;
 		case "enemy_formation":
 			for (i=0;i<this.amount;i++)
 			{
-				
-				enemies[enemyCt] = new enemy(enemyCt);
+				var id = enemies.length;
+				enemies.push(new enemy(id));
 				if (this.shape == "line")
-					enemies[enemyCt].pos = new v3(this.pos.x+i*this.dist*Math.sin(this.angle),0,this.pos.z-i*this.dist*Math.cos(this.angle));
-				enemies[enemyCt].phase = this.phase;
-				enemies[enemyCt].model = this.model;
-				enemies[enemyCt].radius = this.radius;
+					enemies[id].pos = new v3(this.pos.x+i*this.dist*Math.sin(this.angle),150,this.pos.z-i*this.dist*Math.cos(this.angle));
+				enemies[id].phase = this.phase;
+				enemies[id].model = this.model;
+				enemies[id].radius = this.radius;
 				switch (this.behavior)
 				{
 					case "simple_track":
-						enemies[enemyCt].behavior = new followBehavior(1,10);
+						enemies[id].behavior = new followBehavior(1,10);
 						break;
 				}
-				enemies[enemyCt].initSimple();
-				enemyCt++;
+				enemies[id].initSimple();
 			}
+			break;
 	}
+}
+
+event.prototype.addAsteroid = function()
+{
+	var id = asteroids.length;
+	asteroids.push(new asteroid(id));
+	asteroids[id].radius = this.radius;				
+	asteroids[id].pos = new v3(this.pos.x,150,this.pos.z);
+	asteroids[id].phase = this.phase;
+	asteroids[id].init();
 }
 
 function load_level(data)
@@ -157,6 +170,27 @@ function load_level(data)
 			case "</event>":
 				eventNum++;
 				break;
+			case "<boss>":
+				levr.boss = new bossEvent();
+				break;
+			case "</boss>":
+				break;
+			case "<bzpos>":
+				levr.boss.zpos = tokens[1];
+				break;
+			case "<bradius>":
+				levr.boss.radius = parseInt(tokens[1]);
+				break;
+			case "<bpos>":
+				levr.boss.pos = new v3(parseFloat(tokens[1]),parseFloat(tokens[2]),-parseFloat(tokens[3]));
+				break;
+			case "<bmodel>":
+				levr.boss.model = parseInt(tokens[1]);
+				break;		
+			case "<bhp>":
+				levr.boss.maxHP = parseInt(tokens[1]);
+				levr.boss.hp = levr.boss.maxHP;
+				break;				
 		}
 	}
 	levr.loaded = true;

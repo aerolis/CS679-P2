@@ -14,7 +14,7 @@ followBehavior.prototype.step = function (vel,loc) {
 	var acceleration = this.steer_to(human.pos,vel,loc);
     var desired = human.pos.subtract(loc); //vector pointing from the location to the target
     var d = desired.magnitude(); //distance between this and the target
-	if (d>300)
+	if (d>300 || human.state == 0)
 		return vel;
 	else
 	    return vel.add(acceleration).limit(this.maxSpeed); //limit the maximum speed a boid can go
