@@ -10,6 +10,16 @@
 	height:900px;
 	z-index:-1;
 }
+#instructions {
+	background-image:url('menus/instructions.png');
+	display: block;
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width:800px;
+	height:900px;
+	z-index:-1;
+}
 #lev_play {
 	display:block;
 	position:absolute;
@@ -147,14 +157,42 @@
 #finalScore {
 	display:block;
 	position:absolute;
-	top:250px;
+	top:450px;
 	left:200px;
 	z-index:2;
 }
 #finalScoreNum {
 	display:block;
 	position:absolute;
-	top:272px;
+	top:472px;
+	left:500px;
+	z-index:2;
+	font:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 40px;
+	color: white;
+	vertical-align:middle;
+}
+#gameOverBackground {
+	background-image:url('menus/gameOver_background.png');
+	display: block;
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width:800px;
+	height:900px;
+	z-index:1;
+}
+#gameOverScore {
+	display:block;
+	position:absolute;
+	top:450px;
+	left:200px;
+	z-index:2;
+}
+#gameOverScoreNum {
+	display:block;
+	position:absolute;
+	top:472px;
 	left:500px;
 	z-index:2;
 	font:"Trebuchet MS", Arial, Helvetica, sans-serif;

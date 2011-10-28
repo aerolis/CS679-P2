@@ -211,8 +211,9 @@ Your browser does not support the canvas element.
 </canvas>
 
 <div id="loadingBackground">&nbsp;</div>
+<div id="instructions">&nbsp;</div>
 <div id="lev_play"><a href="#" onClick="startGame()"><img src="menus/play_button.png"></a></div>
-<div id="lev_inst"><a href="#"><img src="menus/inst_button.png"></a></div>
+<div id="lev_inst"><a href="#" onClick="drawInstructions = true; loadGUI();"><img src="menus/inst_button.png"></a></div>
 <div id="loadingBar_outline"></div>
 <div id="loadingBar"></div>
 
@@ -230,6 +231,12 @@ Your browser does not support the canvas element.
 <div id="finalBackground">&nbsp;</div>
 <div id="finalScore"><img src="menus/final_score.png"></div>
 <div id="finalScoreNum"></div>
+
+
+<div id="gameOverBackground">&nbsp;</div>
+<div id="gameOverScore"><img src="menus/final_score.png"></div>
+<div id="gameOverScoreNum"></div>
+
 
 </body>
 

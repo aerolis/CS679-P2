@@ -33,6 +33,7 @@ var levNum = 1;
 var numOfLevels = 4;
 var lev = new level();
 var boss;
+var drawInstructions = false;
 
 var levelLength = 10000;
 
@@ -139,6 +140,8 @@ function gameLoop()
 		case 2: //play selected level
 			break;
 		case 3: //level breakdown after,
+			break;
+		case 4: //game over
 			break;
 	}
 	T = setTimeout("gameLoop()", 1/60 * 1000);
@@ -359,6 +362,11 @@ function detectCollisions()
 			}
 		}
 	}
+}
+
+function gameOver() {
+	playState = 4;
+	loadGUI();
 }
 
 function transformVector(v3) {

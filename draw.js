@@ -63,6 +63,17 @@ function loadGUI()
 	switch (playState)
 	{
 		case 0:
+			if (drawInstructions)
+			{
+				document.getElementById("instructions").style.display = "block";
+				document.getElementById("lev_inst").style.display = "none";
+				document.getElementById("lev_play").style.top = "600px";
+			}
+			else
+			{
+				document.getElementById("instructions").style.display = "none";
+			}
+		
 			document.getElementById("healthBar").style.display = "none";
 			document.getElementById("healthBar_outline").style.display = "none";
 			document.getElementById("phaseBar").style.display = "none";
@@ -77,9 +88,14 @@ function loadGUI()
 			document.getElementById("finalBackground").style.display = "none";
 			document.getElementById("finalScore").style.display = "none";
 			document.getElementById("finalScoreNum").style.display = "none";
+			
+			document.getElementById("gameOverBackground").style.display = "none";
+			document.getElementById("gameOverScore").style.display = "none";
+			document.getElementById("gameOverScoreNum").style.display = "none";
 			break;
 		case 1:
 			document.getElementById("loadingBackground").style.display = "none";
+			document.getElementById("instructions").style.display = "none";
 			document.getElementById("lev_play").style.display = "none";
 			document.getElementById("lev_inst").style.display = "none";
 			document.getElementById("loadingBar_outline").style.display = "none";
@@ -121,6 +137,18 @@ function loadGUI()
 			document.getElementById("finalScore").style.display = "block";
 			document.getElementById("finalScoreNum").style.display = "block";
 			document.getElementById("finalScoreNum").innerHTML = ""+human.points;
+			break;
+		case 4:
+			document.getElementById("healthBar").style.display = "none";
+			document.getElementById("healthBar_outline").style.display = "none";
+			document.getElementById("phaseBar").style.display = "none";
+			document.getElementById("bombsBar").style.display = "none";
+			document.getElementById("livesBar").style.display = "none";
+			
+			document.getElementById("gameOverBackground").style.display = "block";
+			document.getElementById("gameOverScore").style.display = "block";
+			document.getElementById("gameOverScoreNum").style.display = "block";
+			document.getElementById("gameOverScoreNum").innerHTML = ""+human.points;
 			break;
 	}
 }

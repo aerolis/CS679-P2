@@ -2,7 +2,7 @@
 // level : 4
 <level> 
 <id> 1 
-<length> 3000 
+<length> 5000 
 
 <event> 
 <zpos> 200 
@@ -20,6 +20,16 @@
 <pos> 150 0 550 
 <radius> 30 
 <phase> 0 
+</event> 
+
+<event> 
+<zpos> 200 
+<type> turret 
+<amount> 1 
+<pos> 50 0 450 
+<radius> 30 
+<phase> 1 
+<model> 3 
 </event> 
 
 <event> 
@@ -54,6 +64,16 @@
 <pos> 150 0 1200 
 <radius> 30 
 <phase> 0 
+</event> 
+
+<event> 
+<zpos> 900 
+<type> turret 
+<amount> 1 
+<pos> 90 0 1200 
+<radius> 30 
+<phase> 1 
+<model> 3 
 </event> 
 
 <event> 
@@ -93,6 +113,34 @@
 </event> 
 
 <event> 
+<zpos> 2150  
+<type> enemy_formation 
+<amount> 8 
+<shape> line 
+<dist> 100 
+<angle> 0
+<behavior> simple_track 
+<model> 8 
+<radius> 30 
+<phase> 1 
+<pos> -100 0 2400 
+</event> 
+
+<event> 
+<zpos> 2150  
+<type> enemy_formation 
+<amount> 4 
+<shape> line 
+<dist> 200 
+<angle> 0
+<behavior> simple_track 
+<model> 8 
+<radius> 30 
+<phase> 0 
+<pos> -100 0 2400 
+</event> 
+
+<event> 
 <zpos> 2250 
 <type> asteroid 
 <amount> 15 
@@ -112,19 +160,148 @@
 
 <event> 
 <zpos> 2550 
+<type> turret 
+<amount> 1 
+<pos> 250 0 2850 
+<radius> 30 
+<phase> 1 
+<model> 3 
+</event> 
+
+<event> 
+<zpos> 2550 
 <type> asteroid 
-<amount> 5 
+<amount> 10 
 <pos> 0 0 2850 
 <radius> 30 
 <phase> 1 
 </event> 
 
+<event> 
+<zpos> 2950  
+<type> enemy_formation 
+<amount> 8 
+<shape> line 
+<dist> 75 
+<angle> 0
+<behavior> simple_track 
+<model> 8 
+<radius> 30 
+<phase> 1 
+<pos> -100 0 3200 
+</event> 
+
+<event> 
+<zpos> 3000 
+<type> turret 
+<amount> 1 
+<pos> -175 0 3250 
+<radius> 30 
+<phase> 1 
+<model> 3 
+</event> 
+
+<event> 
+<zpos> 3000 
+<type> asteroid 
+<amount> 30 
+<pos> 0 0 3300 
+<radius> 30 
+<phase> 0 
+</event> 
+
+<event> 
+<zpos> 3000 
+<type> turret 
+<amount> 1 
+<pos> 175 0 3250 
+<radius> 30 
+<phase> 1 
+<model> 3 
+</event> 
+
+<event> 
+<zpos> 3250  
+<type> enemy_formation 
+<amount> 8 
+<shape> line 
+<dist> 75 
+<angle> 0
+<behavior> simple_track 
+<model> 8 
+<radius> 30 
+<phase> 0 
+<pos> -100 0 3500 
+</event> 
+
+<event> 
+<zpos> 3750  
+<type> enemy_formation 
+<amount> 10 
+<shape> line 
+<dist> 50 
+<angle> 0
+<behavior> simple_track 
+<model> 8 
+<radius> 30 
+<phase> 0 
+<pos> -50 0 4000 
+</event> 
+
+<event> 
+<zpos> 3850  
+<type> enemy_formation 
+<amount> 8 
+<shape> line 
+<dist> 50 
+<angle> 0
+<behavior> simple_track 
+<model> 8 
+<radius> 30 
+<phase> 1 
+<pos> -50 0 4000 
+</event> 
+
+<event> 
+<zpos> 4250 
+<type> turret 
+<amount> 1 
+<pos> 0 0 4550 
+<radius> 30 
+<phase> 1 
+<model> 3 
+</event> 
+
+<event> 
+<zpos> 4650 
+<type> turret 
+<amount> 1 
+<pos> 150 0 4850 
+<radius> 30 
+<phase> 1 
+<model> 3 
+</event> 
+
+<event> 
+<zpos> 4650  
+<type> enemy_formation 
+<amount> 8 
+<shape> line 
+<dist> 50 
+<angle> 0
+<behavior> simple_track 
+<model> 8 
+<radius> 30 
+<phase> 0 
+<pos> -50 0 4850 
+</event> 
+
 <boss> 
-<bzpos> 3000 
-<bpos> 0 0 3250 
+<bzpos> 5000 
+<bpos> 0 0 5250 
 <bradius> 70 
 <bmodel> 11 
-<bhp> 50 
+<bhp> 100 
 </boss> 
 
-</level> 
+</level> // JavaScript Document

@@ -117,6 +117,10 @@ player.prototype.takeDamage = function(amt)
 				//do explosion
 				//don't draw player for 1 sec?
 			}
+			else if (this.hp <= 0 && this.numLives == 0)
+			{
+				gameOver();
+			}
 			drawGUI();
 		}
 	}
@@ -150,14 +154,14 @@ player.prototype.update = function()
 		{
 			if (this.roll < 10)
 				this.roll += 1.5;
-			this.pos.x -= 2;
+			this.pos.x -= 3;
 			this.pos.x = Math.max(this.pos.x,-250);
 		}
 		else if (this.right && !this.left)
 		{
 			if (this.roll > -10)
 				this.roll -= 1.5;
-			this.pos.x += 2;
+			this.pos.x += 3;
 			this.pos.x = Math.min(this.pos.x,250);
 		}
 		else
@@ -169,12 +173,12 @@ player.prototype.update = function()
 		}
 		if(this.fwd)
 		{
-			this.zScreenPos -= 2;
+			this.zScreenPos -= 3;
 			//this.zScreenPos = Math.max(this.pos.x,0);
 		}
 		if(this.bck)
 		{
-			this.zScreenPos += 2;
+			this.zScreenPos += 3;
 			//this.zScreenPos = Math.min(this.pos.x,400);
 		}
 		this.pos.z = cam.pos.z + this.zScreenPos;
