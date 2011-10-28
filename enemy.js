@@ -16,6 +16,8 @@ function enemy(id)
 	this.flash = false;
 	this.hit_timer = 0.0;
 	this.ready = false;
+	this.fireTimeout = 0;
+	this.fireRate = 30;
 }
 enemy.prototype.init = function()
 {
@@ -44,14 +46,26 @@ enemy.prototype.update = function()
 		
 		var b = this.behavior;
 		this.vel = b.update(this.vel,this.pos);
+		if (human.phase == this.phase && b.rotational)
+			this.rot.y += b.updateRot(this.rotVel,this.rot,this.pos);
+		else
+			this.rot = this.rot.add(this.rotVel);
 		
 		this.pos = this.pos.add(this.vel); //translate distance based on velocity and passed time
-		this.rot = this.rot.add(this.rotVel);
-		//var theta = Math.acos(this.velocity.x/this.velocity.magnitude());
+
+		if (b.fire)
+		{
+			if (this.fireTimeout > 0)
+				this.fireTimeout--;
+			if (human.state == 1 && human.phase == this.phase)
+				this.fire();
+		}
+
 		if (this.pos.z > cam.pos.z+300)
 		{
 			this.offScreen();
 		}
+		
 	}
 	else
 	{
@@ -67,6 +81,26 @@ enemy.prototype.killed = function()
 enemy.prototype.offScreen = function()
 {
 	enemies.splice(enemies.indexOf(this),1);
+}
+enemy.prototype.fire = function()
+{	
+	var zdif = (this.pos.z-human.pos.z);
+	var xdif = (this.pos.x-human.pos.x);
+	var dist = Math.sqrt(zdif*zdif+xdif*xdif);
+	var ret = 0;
+	var thetaGoal = Math.acos(xdif/dist)*(90/(Math.PI/2))+90;
+	if (zdif >=0)
+		thetaGoal = (540-this.thetaGoal)%360;
+	if (this.rot.y < thetaGoal+1 && this.rot.y > thetaGoal-1)
+	{
+		console.log("fire");
+		if(this.fireTimeout == 0)
+		{
+			this.fireTimeout = this.fireRate;
+			lasers.push(new laser(1,lasers.length,3,this.pos,this.rot));
+			lasers.push(new laser(-1,lasers.length,3,this.pos,this.rot));
+		}
+	}
 }
 enemy.prototype.takeDamage = function(type)
 {

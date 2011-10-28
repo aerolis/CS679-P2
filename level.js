@@ -92,6 +92,16 @@ event.prototype.doEvent = function()
 				enemies[id].initSimple();
 			}
 			break;
+		case "turret":
+			var id = enemies.length;
+			enemies.push(new enemy(id));
+			enemies[id].pos = this.pos;
+			enemies[id].phase = this.phase;
+			enemies[id].model = this.model;
+			enemies[id].radius = this.radius;
+			enemies[id].behavior = new turretBehavior();
+			enemies[id].initSimple();
+			break;
 	}
 }
 

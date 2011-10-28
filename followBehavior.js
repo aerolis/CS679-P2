@@ -2,6 +2,8 @@ function followBehavior(maxSpeed,maxTurn)
 {
 	this.maxSpeed = maxSpeed;
 	this.maxTurn = maxTurn;
+	this.fire = false;
+	this.rotational = false;
 }
 
 followBehavior.prototype.update = function(vel,loc) 
@@ -42,4 +44,8 @@ followBehavior.prototype.steer_to = function(target,vel,loc)
               steer = new v3(0,0,0); //return zero vector
        }
        return steer;
+}
+followBehavior.prototype.updateRot = function(rotVel,rot,pos)
+{
+	return 0;
 }

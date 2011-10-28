@@ -47,8 +47,8 @@ player.prototype.fireMain = function()
 	if(this.fireTimeout == 0)
 	{
 		this.fireTimeout = 10;
-		lasers.push(new laser(1,lasers.length,1));
-		lasers.push(new laser(-1,lasers.length,1));
+		lasers.push(new laser(1,lasers.length,1,0,0));
+		lasers.push(new laser(-1,lasers.length,1,0,0));
 	}
 }
 

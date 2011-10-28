@@ -1,4 +1,4 @@
-function laser(lr, id,type)
+function laser(lr, id,type,pos,rot)
 {
 	if (type == 1)
 	{
@@ -19,7 +19,7 @@ function laser(lr, id,type)
 		this.time = 180;
 		this.type = type;
 	}
-	else
+	else if (type == 2)
 	{
 		this.id = id;
 		var yaw = degToRad(boss.rot.y);
@@ -32,13 +32,31 @@ function laser(lr, id,type)
 		this.scale = new v3(1,1,1);
 		this.vel = new v3(10 * sy, 0, 10 * cy);
 		if (lr == 1)
-			this.phase = 1;
+			this.phase = human.phase;
 		else
-			this.phase = 0;
+			this.phase = !human.phase;
 		this.maxHP = 10;
 		this.model = 12;
 		this.time = 180;
 		this.type = type;
+	}
+	else
+	{
+		this.id = id;
+		var yaw = degToRad(rot.y);
+		var sy = Math.sin(yaw);
+		var cy = Math.cos(yaw);
+		var dx = lr * 21.1;
+		var dz = 41.9;
+		this.pos = new v3(pos.x + cy * dx + sy * dz, 0,pos.z + cy * dz - sy * dx);
+		this.rot = new v3(0,rot.y,0);
+		this.scale = new v3(1,1,1);
+		this.vel = new v3(-10 * sy, 0, -10 * cy);
+		this.phase = 1;
+		this.maxHP = 10;
+		this.model = 12;
+		this.time = 180;
+		this.type = 2;
 	}
 }
 laser.prototype.init = function()

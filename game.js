@@ -30,7 +30,7 @@ var enemyCt = 0;
 var itemCt = 0;
 var explosionCt = 0;
 var levNum = 1;
-var numOfLevels = 2;
+var numOfLevels = 4;
 var lev = new level();
 var boss;
 

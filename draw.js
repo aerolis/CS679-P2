@@ -71,10 +71,12 @@ function loadGUI()
 			
 			document.getElementById("afterLevelBackground").style.display = "none";
 			document.getElementById("afterLevelScore").style.display = "none";
+			document.getElementById("afterLevelScoreNum").style.display = "none";
 			document.getElementById("afterLevelNext").style.display = "none";
 			
 			document.getElementById("finalBackground").style.display = "none";
 			document.getElementById("finalScore").style.display = "none";
+			document.getElementById("finalScoreNum").style.display = "none";
 			break;
 		case 1:
 			document.getElementById("loadingBackground").style.display = "none";
@@ -117,7 +119,8 @@ function loadGUI()
 			
 			document.getElementById("finalBackground").style.display = "block";
 			document.getElementById("finalScore").style.display = "block";
-			document.getElementById("finalScore").innerHTML = "<img src='menus/final_score.png'>   "+human.points;
+			document.getElementById("finalScoreNum").style.display = "block";
+			document.getElementById("finalScoreNum").innerHTML = ""+human.points;
 			break;
 	}
 }

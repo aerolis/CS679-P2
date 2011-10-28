@@ -50,8 +50,8 @@ bossEvent.prototype.fire = function()
 		if(this.fireTimeout == 0)
 		{
 			this.fireTimeout = this.fireRate;
-			lasers.push(new laser(1,lasers.length,2));
-			lasers.push(new laser(-1,lasers.length,2));
+			lasers.push(new laser(1,lasers.length,2,0,0));
+			lasers.push(new laser(-1,lasers.length,2,0,0));
 		}
 	}
 }

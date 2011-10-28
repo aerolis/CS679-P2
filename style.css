@@ -151,3 +151,14 @@
 	left:200px;
 	z-index:2;
 }
+#finalScoreNum {
+	display:block;
+	position:absolute;
+	top:272px;
+	left:500px;
+	z-index:2;
+	font:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 40px;
+	color: white;
+	vertical-align:middle;
+}
