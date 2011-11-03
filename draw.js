@@ -66,13 +66,19 @@ function loadGUI()
 			if (drawInstructions)
 			{
 				document.getElementById("instructions").style.display = "block";
+				document.getElementById("loadingBar").style.display = "none";
+				document.getElementById("loadingBar_outline").style.display = "none";
+				document.getElementById("lev_play").style.top = "500px";
 				document.getElementById("lev_inst").style.display = "none";
-				document.getElementById("lev_play").style.top = "600px";
 			}
 			else
 			{
 				document.getElementById("instructions").style.display = "none";
+				document.getElementById("lev_inst").style.display = "block";
 			}
+			
+			document.getElementById("loadingBackground").style.display = "block";
+			document.getElementById("lev_play").style.display = "block";
 		
 			document.getElementById("healthBar").style.display = "none";
 			document.getElementById("healthBar_outline").style.display = "none";
@@ -88,6 +94,7 @@ function loadGUI()
 			document.getElementById("finalBackground").style.display = "none";
 			document.getElementById("finalScore").style.display = "none";
 			document.getElementById("finalScoreNum").style.display = "none";
+			document.getElementById("finalReplay").style.display = "none";
 			
 			document.getElementById("gameOverBackground").style.display = "none";
 			document.getElementById("gameOverScore").style.display = "none";
@@ -137,6 +144,7 @@ function loadGUI()
 			document.getElementById("finalScore").style.display = "block";
 			document.getElementById("finalScoreNum").style.display = "block";
 			document.getElementById("finalScoreNum").innerHTML = ""+human.points;
+			document.getElementById("finalReplay").style.display = "block";
 			break;
 		case 4:
 			document.getElementById("healthBar").style.display = "none";
@@ -149,6 +157,7 @@ function loadGUI()
 			document.getElementById("gameOverScore").style.display = "block";
 			document.getElementById("gameOverScoreNum").style.display = "block";
 			document.getElementById("gameOverScoreNum").innerHTML = ""+human.points;
+			document.getElementById("finalReplay").style.display = "block";
 			break;
 	}
 }
@@ -616,7 +625,7 @@ function drawPlayer()
 	vec3.normalize(lightingDirection, adjustedLD);
 	vec3.scale(adjustedLD, -1);
 	gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
-	gl.uniform3f(shaderProgram.directionalColorUniform,1.1,1.1,1.1);
+	gl.uniform3f(shaderProgram.directionalColorUniform,1.8,1.8,1.8);
 	gl.uniform1f(shaderProgram.time,human.hit_timer);
 	gl.uniform1f(shaderProgram.draw_with_lighting,1.0);
 

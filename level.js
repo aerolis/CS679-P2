@@ -197,6 +197,9 @@ function load_level(data)
 			case "<bmodel>":
 				levr.boss.model = parseInt(tokens[1]);
 				break;		
+			case "<brate>":
+				levr.boss.fireRate = parseInt(tokens[1]);
+				break;		
 			case "<bhp>":
 				levr.boss.maxHP = parseInt(tokens[1]);
 				levr.boss.hp = levr.boss.maxHP;

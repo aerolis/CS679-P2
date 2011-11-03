@@ -8,7 +8,7 @@
 	top: 10px;
 	width:800px;
 	height:900px;
-	z-index:-1;
+	z-index:1;
 }
 #instructions {
 	background-image:url('menus/instructions.png');
@@ -18,19 +18,21 @@
 	top: 10px;
 	width:800px;
 	height:900px;
-	z-index:-1;
+	z-index:1;
 }
 #lev_play {
 	display:block;
 	position:absolute;
 	top:250px;
 	left:300px;
+	z-index:2;
 }
 #lev_inst {
 	display:block;
 	position:absolute;
 	top:350px;
 	left:300px;
+	z-index:2;
 }
 #loadingBar_outline {
 	display: block;
@@ -40,7 +42,8 @@
 	background-color: black;
 	top: 800px;
 	left: 298px;
-	opacity: 0.5;	
+	opacity: 0.5;
+	z-index:2;	
 }
 #loadingBar {
 	background-color: red;
@@ -51,6 +54,7 @@
 	position: absolute;
 	top: 802px;
 	left: 300px;
+	z-index:2;
 }
 
 
@@ -120,7 +124,7 @@
 	top:250px;
 	left:200px;
 	z-index:2;
-	font: Verdana, Geneva, sans-serif;
+	font-family: Verdana, Geneva, sans-serif;
 	font-size: 40px;
 	color: white;
 	vertical-align:middle;
@@ -131,7 +135,7 @@
 	top:272px;
 	left:400px;
 	z-index:2;
-	font:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
 	font-size: 40px;
 	color: white;
 	vertical-align:middle;
@@ -167,10 +171,17 @@
 	top:472px;
 	left:500px;
 	z-index:2;
-	font:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
 	font-size: 40px;
 	color: white;
 	vertical-align:middle;
+}
+#finalReplay {
+	display:block;
+	position:absolute;
+	top:550px;
+	left:300px;
+	z-index:2;
 }
 #gameOverBackground {
 	background-image:url('menus/gameOver_background.png');
@@ -199,4 +210,11 @@
 	font-size: 40px;
 	color: white;
 	vertical-align:middle;
+}
+#gameOverReplay {
+	display:none;
+	position:absolute;
+	top:550px;
+	left:300px;
+	z-index:2;
 }

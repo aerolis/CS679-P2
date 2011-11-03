@@ -2,31 +2,17 @@ function handleMouseMove(evt)
 {
 	if (playState == 1)
 	{
-		if ((evt.clientX-10)/canvas.width > .5)
-		{
-			human.yaw = Math.min(30,30*(canvas.width/2-Math.min((evt.clientX-10),canvas.width))/(canvas.width/2));
-		}
-		else if ((evt.clientX-10)/canvas.width < .5)
-		{
-			human.yaw = Math.max(-30,-30*((evt.clientX-10)-canvas.width/2)/(canvas.width/2));
-		}
-		else
-		{
-			human.yaw = 0;
-		}
-		/*if ((evt.clientY-10)/canvas.height > .5)
-		{
-			human.pitch = Math.min(30,30*(canvas.height/2-(evt.clientY-10))/(canvas.height/2));
-		}
-		else if ((evt.clientY-10)/canvas.height < .5)
-		{
-			human.pitch = Math.max(-30,-30*((evt.clientY-10)-canvas.height/2)/(canvas.height/2));
-		}
-		else
-		{
-			human.pitch = 0;
-		}*/
+		mousex = Math.max(0,Math.min(canvas.width,evt.clientX-10));
+		mousez = Math.max(0,Math.min(canvas.height,evt.clientY-10));
 	}
+}
+function handleMouseDown(evt)
+{
+	human.fire = true;
+}
+function handleMouseUp(evt)
+{
+	human.fire = false;
 }
 function handleKeyDown(evt) {
 		switch (evt.keyCode) {
@@ -41,9 +27,6 @@ function handleKeyDown(evt) {
 			break;
 			case 68:  /* Right arrow was pressed */
 				human.right = true;
-			break;
-			case 32:
-				human.fire = true;
 			break;
 		}
 }
@@ -61,13 +44,10 @@ function handleKeyUp(evt) {
 			case 68:  /* Right arrow was pressed */
 				human.right = false;
 			break;
-			case 32: // space bar
-				human.fire = false;
-			break;
-			case 66:
+			case 32:
 				human.useBomb();
 			break;
-			case 86:
+			case 69:
 				if (human.phase_cooldown <= 0)
 				{
 					human.phase = !human.phase;

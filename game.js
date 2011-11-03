@@ -41,12 +41,14 @@ var levelLength = 10000;
 var models = new Array();
 var meshNum = 0;
 var modelsChecked = 0;
-var totalModels = 12;
+var totalModels = 13;
 var doOnce = false;
 var doneSetup = 0;
 
 //phase shift vars
 var phaseOutTime = 0;
+var mousex = 0;
+var mousez = 0;
 
 
 function preInit()
@@ -59,12 +61,30 @@ function preInit()
 	//pausecomp(500);
 	T = setTimeout("initGame()", 1/60 * 1000);
 }
-
+function replay()
+{
+	playState = 0;
+	time = 0;
+	human = new player();
+	cam = new camera();
+	asteroids = new Array();
+	enemies = new Array();
+	items = new Array();
+	lasers = new Array();
+	explosions = new Array();
+	levNum = 1;
+	lev = new level();
+	playState = 0;
+	boss = null;
+	loadGUI();
+	setupLevel();
+}
 function startGame()
 {
 	if (lev.loaded == true && checkLoaded)
 	{
 		//pausecomp(500);
+		drawInstructions = false;
 		playState = 1;
 		loadGUI();
 		drawGUI();
@@ -217,10 +237,13 @@ function initObjects()
 	var i,j;
 	for (i=0;i<models.length;i++)
 	{
-		models[i].initMaterials();
-		for (j=0;j<models[i].meshes.length;j++)
+		if (models[i] != null)
 		{
-			models[i].meshes[j].bindMesh();
+			models[i].initMaterials();
+			for (j=0;j<models[i].meshes.length;j++)
+			{
+				models[i].meshes[j].bindMesh();
+			}
 		}
 	}	
 
@@ -282,7 +305,7 @@ function detectCollisions()
 		if (asteroids[i].phase == human.phase)
 		{
 			var distance = human.pos.subtract(asteroids[i].pos).magnitude();
-			if(distance < asteroids[i].radius)
+			if(distance < asteroids[i].radius+7)
 			{//collision
 				//damage player
 				human.takeDamage(asteroids[i].maxHP);
@@ -308,7 +331,7 @@ function detectCollisions()
 		if (enemies[i] != null && enemies[i].phase == human.phase)
 		{
 			var distance = human.pos.subtract(enemies[i].pos).magnitude();
-			if(distance < enemies[i].radius)
+			if(distance < enemies[i].radius+7)
 			{//collision
 				//damage player
 				human.takeDamage(2);
@@ -386,4 +409,5 @@ while (new Date() < ms){}
 window.addEventListener('keydown',handleKeyDown,true);
 window.addEventListener('keyup',handleKeyUp,true);
 window.addEventListener('mousemove',handleMouseMove,true);
-//window.addEventListener('mousedown',handleMouseDown,true);
+window.addEventListener('mousedown',handleMouseDown,true);
+window.addEventListener('mouseup',handleMouseUp,true);

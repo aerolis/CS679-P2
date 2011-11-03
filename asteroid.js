@@ -4,8 +4,8 @@ function asteroid(id){
 	this.rot = new v3(0,0,0);
 	this.scale = new v3(1,1,1);
 	this.rotVel = new v3(0,0,0);
-	this.vel = new v3(Math.random()*4-2,0,Math.random()*1-.5);
-	this.model = Math.round(Math.random())+1;
+	this.vel = new v3(Math.random()*2-1,0,Math.random()*1-.5);
+	this.model = Math.round(Math.random()*2)+1;
 	this.phase = 1;
 	this.maxHP = 5;
 	this.hp = 1;

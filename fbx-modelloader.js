@@ -14,8 +14,23 @@ function fbx_parsemesh(data)
 	var connections = new Array();
 	var loc = 0;
 	var ln = lines[loc];
+	var findName = false;
 	while (ln != "; Object properties" + '\r')
 	{
+		if (ln == "FBXHeaderExtension:  {" + '\r')
+			findName = true;
+		else if (findName)
+		{
+			var nextLn = ln.split(' ');
+			if (nextLn[12] == "P:")
+			{
+				var nameTmp = nextLn[17].split('\\');
+				var name = nameTmp[nameTmp.length-1].split('.');
+				newModel.name = name[0];
+				findName = false;
+			}
+		}
+		
 		loc++;
 		ln = lines[loc];
 	}

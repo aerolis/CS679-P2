@@ -24,11 +24,16 @@ bossEvent.prototype.update = function()
 		var zdif = (this.pos.z-human.pos.z);
 		var xdif = (this.pos.x-human.pos.x);
 		var dist = Math.sqrt(zdif*zdif+xdif*xdif);
-		this.thetaGoal = Math.acos(xdif/dist)*60-90;
+		//this.thetaGoal = Math.acos(xdif/dist)*60-90;
+		this.thetaGoal = Math.acos(xdif/dist)*180/Math.PI-90;
 		if (this.rot.y > this.thetaGoal+1)
 			this.rot.y-=this.maxTurn;
 		else if (this.rot.y < this.thetaGoal-1)
 			this.rot.y+=this.maxTurn;
+		else if (this.rot.y > this.thetaGoal)
+			this.rot.y -= 0.05;
+		else if (this.rot.y < this.thetaGoal)
+			this.rot.y += 0.05;
 			
 		if (this.fireTimeout > 0)
 			this.fireTimeout--;
@@ -45,7 +50,7 @@ bossEvent.prototype.update = function()
 }
 bossEvent.prototype.fire = function()
 {
-	if (this.rot.y < this.thetaGoal+1 && this.rot.y > this.thetaGoal-1)
+	if (this.rot.y < this.thetaGoal+0.5 && this.rot.y > this.thetaGoal-0.5)
 	{
 		if(this.fireTimeout == 0)
 		{
@@ -73,8 +78,11 @@ bossEvent.prototype.die = function()
 	human.points += 1000;
 	drawScore();
 	this.dead = true;
+	T = setTimeout("endLevel()", 2000);
+}
+function endLevel()
+{
 	lev.finished = true;
-		//finish level
 }
 bossEvent.prototype.doEvent = function()
 {

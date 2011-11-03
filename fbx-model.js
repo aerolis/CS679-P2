@@ -3,6 +3,7 @@ function fbx_model()
 	this.textures = new Array();
 	this.materials = new Array();
 	this.meshes = new Array();
+	this.name = "";
 }
 fbx_model.prototype.initMaterials = function()
 {
@@ -155,9 +156,52 @@ function getMeshes(data)
 	for (i in lines)
 	{
 		var ln = lines[i].split(' ');
+		meshNum = parseInt(ln[0]);
 		$.get("meshes/"+ln[2], function(d2){
-			models = models.concat(fbx_parsemesh(d2));
-			meshNum = models.length;
+			var tmpModel = fbx_parsemesh(d2);
+			switch (tmpModel.name)
+			{
+				case "player_ship":
+					models[0] = tmpModel;
+					break;
+				case "asteroid_1":
+					models[1] = tmpModel;
+					break;
+				case "asteroid_2":
+					models[2] = tmpModel;
+					break;
+				case "turret_1":
+					models[4] = tmpModel;
+					break;
+				case "asteroid_3":
+					models[3] = tmpModel;
+					break;
+				case "laser":
+					models[6] = tmpModel;
+					break;
+				case "background":
+					models[5] = tmpModel;
+					break;
+				case "bomb":
+					models[7] = tmpModel;
+					break;
+				case "ufo":
+					models[8] = tmpModel;
+					break;
+				case "explosion_2":
+					models[9] = tmpModel;
+					break;
+				case "life":
+					models[10] = tmpModel;
+					break;
+				case "boss_2":
+					models[11] = tmpModel;
+					break;
+				case "laser_2":
+					models[12] = tmpModel;
+					break;
+			}
+			//meshNum = models.length;
 		}, 'html');
 	}
 }

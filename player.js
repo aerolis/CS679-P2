@@ -102,7 +102,7 @@ player.prototype.takeDamage = function(amt)
 			this.hp -= amt;
 			this.hit_timer = 60.0;
 			this.flash = true;
-			if (this.hp <= 0 && this.numLives > 0)
+			if (this.hp <= 0)
 			{
 				this.numLives--;
 				this.state = 0;
@@ -115,11 +115,6 @@ player.prototype.takeDamage = function(amt)
 				explosions[id].initialScale = 2;	
 				explosions[id].pos = this.pos;
 				//do explosion
-				//don't draw player for 1 sec?
-			}
-			else if (this.hp <= 0 && this.numLives == 0)
-			{
-				gameOver();
 			}
 			drawGUI();
 		}
@@ -130,6 +125,10 @@ player.prototype.update = function()
 {
 	if (this.state == 1)
 	{
+		if (this.numLives < 0)
+		{
+			gameOver();
+		}
 		if(this.fireTimeout > 0)
 		{
 			this.fireTimeout--;
@@ -174,14 +173,24 @@ player.prototype.update = function()
 		if(this.fwd)
 		{
 			this.zScreenPos -= 3;
-			//this.zScreenPos = Math.max(this.pos.x,0);
+			this.zScreenPos = Math.max(this.zScreenPos,-260);
 		}
 		if(this.bck)
 		{
 			this.zScreenPos += 3;
-			//this.zScreenPos = Math.min(this.pos.x,400);
+			this.zScreenPos = Math.min(this.zScreenPos,260);
 		}
 		this.pos.z = cam.pos.z + this.zScreenPos;
+				
+		//deal with changing angle
+		var hx = ((canvas.width/2)/250)*this.pos.x+canvas.width/2;
+		var hz = ((canvas.height/2)/260)*this.zScreenPos+canvas.height/2;
+		
+		var dx = mousex-hx;
+		var dz = mousez-hz;
+		
+		this.yaw = Math.atan(dx/-Math.abs(dz))*180/Math.PI;
+		this.yaw = Math.max(-30,Math.min(30,this.yaw));
 	}
 	else if (this.state == 0)
 	{
